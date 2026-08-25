@@ -1,0 +1,124 @@
+/* ==========================================
+   auth.css (สำหรับหน้า Login & Register เท่านั้น)
+   ========================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
+
+/* 1. จัดฉากหลังอ้างอิงโทนสีจากหน้า Shop (#f0ede6) */
+body {
+    font-family: 'Prompt', 'Arial', sans-serif;
+    background-color: #f0ede6;
+    color: #333333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* 2. หัวข้อ "เข้าสู่ระบบ / สมัครสมาชิก" */
+h1 {
+    color: #444444;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* 3. การ์ดฟอร์มตรงกลาง (ทรงเดียวกับการ์ดสินค้า) */
+form {
+    background-color: #ffffff;
+    padding: 35px 30px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    max-width: 360px;
+    box-sizing: border-box;
+}
+
+/* 4. จัดช่องกรอกข้อมูล */
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555555;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+input {
+    width: 100% !important;
+    padding: 12px 14px !important;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fafafa;
+    color: #333333;
+    font-size: 0.95rem;
+    box-sizing: border-box;
+    outline: none;
+    transition: all 0.2s ease;
+}
+
+input:focus {
+    border-color: #637761;
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(99, 119, 97, 0.15);
+}
+
+/* 5. ปุ่มกด (ดึงสีเขียวเดียวกับปุ่ม "ออกจากระบบ" #637761) */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #637761;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    font-family: 'Prompt', sans-serif;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: #526350;
+    transform: translateY(-1px);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+/* 6. ข้อความแจ้งเตือนและลิงก์ด้านล่าง */
+#message {
+    margin-top: 15px;
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+body > p:last-of-type {
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: #666666;
+    text-align: center;
+}
+
+a {
+    color: #637761;
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #3d4a3b;
+    text-decoration: underline;
+}

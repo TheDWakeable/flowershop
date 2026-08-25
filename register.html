@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - สมัครสมาชิก</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; }
+        input { width: 300px; padding: 8px; }
+        button { padding: 8px 15px; cursor: pointer; }
+    </style>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>สมัครสมาชิก</h1>
+    <form id="registerForm">
+        <div class="form-group">
+            <label>ชื่อ-นามสกุล:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-group">
+            <label>Username:</label>
+            <input type="text" id="username" required>
+        </div>
+        <div class="form-group">
+            <label>Password:</label>
+            <input type="password" id="password" required>
+        </div>
+        <button type="submit">สมัครสมาชิก</button>
+    </form>
+    <p id="message"></p>
+    <p>มีบัญชีอยู่แล้ว? <a href="login.html">เข้าสู่ระบบที่นี่</a></p>
+
+    <script>
+        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = {
+                name: document.getElementById("name").value,
+                username: document.getElementById("username").value,
+                password: document.getElementById("password").value
+            };
+
+            const response = await fetch("/api/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const messageElem = document.getElementById("message");
+
+            if (result.success) {
+                alert("สมัครสมาชิกสำเร็จ! กำลังนำคุณไปหน้าเข้าสู่ระบบ");
+                window.location.href = "login.html";
+            } else {
+                messageElem.innerText = result.message;
+                messageElem.style.color = "red";
+            }
+        });
+    </script>
+
+<script>
+    document.querySelector('form').addEventListener('submit', async (e) => {
+        e.preventDefault(); // ป้องกันหน้าเว็บรีเฟรชเอง
+        
+        // ดึงค่าจากช่อง input (เช็คชื่อ id ในหน้าเว็บคุณด้วยนะครับว่าตรงกันไหม)
+        const name = document.querySelector('#name').value;
+        const username = document.querySelector('#username').value;
+        const password = document.querySelector('#password').value;
+
+        try {
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, username, password })
+            });
+
+            const data = await response.json();
+            alert(data.message); // แสดงข้อความแจ้งเตือน
+
+            if (response.ok) {
+                window.location.href = '/login.html'; // ถ้าสมัครสำเร็จ เด้งไปหน้า Login
+            }
+        } catch (err) {
+            console.error('Error:', err);
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ร้านค้า - Shop</title>
+ <style>
+    /* ==========================================
+       Modern Botanical & Clean Shop Theme
+       ========================================== */
+    @import url('https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&display=swap');
+
+    body {
+        font-family: 'Prompt', sans-serif;
+        background-color: #f8f6f0; /* สีครีมอ่อนๆ สบายตา */
+        color: #2c2c2c;
+        margin: 0;
+        padding: 40px 20px;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* ส่วนหัวข้อและปุ่มออกจากระบบ */
+    h2 {
+        color: #2c3e2d;
+        font-size: 1.8rem;
+        font-weight: 600;
+        display: inline-block;
+        margin: 0;
+    }
+
+    body > button[onclick="logout()"] {
+        background-color: #ffffff;
+        color: #d9534f;
+        border: 1.5px solid #d9534f;
+        padding: 8px 18px;
+        border-radius: 8px;
+        font-family: 'Prompt', sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        float: right;
+        transition: all 0.2s ease;
+    }
+
+    body > button[onclick="logout()"]:hover {
+        background-color: #d9534f;
+        color: #ffffff;
+    }
+
+    hr {
+        border: none;
+        border-top: 1px solid #e2ddd5;
+        margin: 20px 0 30px 0;
+        clear: both;
+    }
+
+    /* 1. จัด Layout สินค้าแบบ Grid */
+    #product-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 24px;
+        margin-top: 20px;
+    }
+
+    /* 2. ตกแต่งการ์ดสินค้า */
+    .product-card {
+        background-color: #ffffff;
+        border: 1px solid #eae5dc;
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    /* 3. รูปภาพสินค้า */
+    .product-card img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 15px;
+    }
+
+    /* 4. ตัวหนังสือในการ์ด */
+    .product-card h3 {
+        margin: 0 0 8px 0;
+        color: #2c3e2d;
+        font-size: 1.25rem;
+        font-weight: 600;
+    }
+
+    .product-card p {
+        margin: 6px 0;
+        color: #666666;
+        font-size: 0.92rem;
+    }
+
+    .product-card p:nth-of-type(2) {
+        color: #2c3e2d;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    /* 5. ปุ่ม "เพิ่มลงตะกร้า" */
+    .product-card button {
+        margin-top: 15px;
+        background-color: #3b5238; /* สีเขียวธรรมชาติพรีเมียม */
+        color: #ffffff;
+        border: none;
+        padding: 12px;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-family: 'Prompt', sans-serif;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    .product-card button:hover {
+        background-color: #2c3e2d;
+    }
+
+    .product-card button:active {
+        transform: scale(0.98);
+    }
+
+    .product-card button:disabled {
+        background-color: #e5e2db;
+        color: #999999;
+        cursor: not-allowed;
+    }
+
+    /* 6. กล่องตะกร้าสินค้า (Cart Section) */
+    #cart-section {
+        margin-top: 40px;
+        padding: 30px;
+        border: 1px solid #eae5dc;
+        border-radius: 20px;
+        background-color: #ffffff;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    #cart-section h2 {
+        font-size: 1.4rem;
+        border-bottom: 2px solid #f0ece4;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+        display: block;
+        width: 100%;
+    }
+
+    #cart-items {
+        color: #555555;
+        font-size: 0.98rem;
+    }
+
+    /* รายการสินค้าในตะกร้าแต่ละแถว */
+    #cart-items > div {
+        background-color: #fcfbfa;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #f0ece4;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    /* ปุ่มจัดการจำนวนในตะกร้า (+, -, ลบ) */
+    #cart-items button {
+        padding: 6px 12px;
+        margin-left: 4px;
+        border: none;
+        border-radius: 6px;
+        font-family: 'Prompt', sans-serif;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    /* ปุ่มเพิ่ม/ลด (+, -) */
+    #cart-items button:nth-of-type(1),
+    #cart-items button:nth-of-type(2) {
+        background-color: #e8e4dc;
+        color: #2c2c2c;
+    }
+    #cart-items button:nth-of-type(1):hover,
+    #cart-items button:nth-of-type(2):hover {
+        background-color: #d5d0c5;
+    }
+
+    /* ปุ่มลบสินค้า */
+    #cart-items button:nth-of-type(3) {
+        background-color: #fde8e8;
+        color: #d9534f;
+    }
+    #cart-items button:nth-of-type(3):hover {
+        background-color: #d9534f;
+        color: #ffffff;
+    }
+
+    /* ราคารวมและปุ่มชำระเงิน */
+    #cart-section p {
+        font-size: 1.1rem;
+        margin: 25px 0 15px 0;
+        color: #2c2c2c;
+    }
+
+    #cart-total {
+        color: #3b5238;
+        font-size: 1.3rem;
+        font-weight: 600;
+    }
+
+    #checkout-btn {
+        width: 100%;
+        padding: 14px;
+        background-color: #3b5238;
+        color: #ffffff;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-family: 'Prompt', sans-serif;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s, transform 0.1s;
+    }
+
+    #checkout-btn:hover {
+        background-color: #2c3e2d;
+    }
+
+    #checkout-btn:active {
+        transform: scale(0.99);
+    }
+
+    #checkout-btn:disabled {
+        background-color: #e5e2db;
+        color: #999999;
+        cursor: not-allowed;
+    }
+</style>
+
+</head>
+<body>
+
+    <h2>The Flower for ur love</h2>
+    <button onclick="logout()">ออกจากระบบ</button>
+    <hr>
+
+    <!-- 1. กล่องแสดงรายการสินค้า -->
+    <div id="product-list"></div>
+
+    <!-- 2. กล่องแสดงรายการในตะกร้าสินค้า -->
+    <div id="cart-section">
+        <h2>🛒 ตะกร้าของคุณ</h2>
+        <div id="cart-items">ยังไม่มีของในตะกร้า</div>
+        <p><strong>ราคารวมทั้งหมด: <span id="cart-total">0</span> บาท</strong></p>
+        <button id="checkout-btn" onclick="checkout()" disabled>ชำระเงิน</button>
+    </div>
+
+    <!-- 3. โค้ดการทำงานทั้งหมด -->
+    <script>
+        let cart = [];
+
+        // ดึงรายการสินค้าจาก MongoDB หลังบ้าน
+        async function loadProducts() {
+            try {
+                const response = await fetch('/api/products');
+                const products = await response.json();
+                
+                const container = document.getElementById('product-list');
+                container.innerHTML = '';
+
+                products.forEach(item => {
+                    const isOutOfStock = item.stock <= 0;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" style="with : 100%; border-radius: 8px;"
+                        <h3>${item.name}</h3>
+                        <p>${item.description}</p>
+                        <p>ราคา: ${item.price} บาท</p>
+                        <p>คงเหลือ: <strong>${isOutOfStock ? 'สินค้าหมด (รอ Admin เพิ่มของ)' : item.stock + ' ชิ้น'}</strong></p>
+                        <button 
+                            ${isOutOfStock ? 'disabled' : ''} 
+                            onclick="addToCart('${item._id}', '${item.name}', ${item.price}, ${item.stock})">
+                            ${isOutOfStock ? 'สินค้าหมด' : 'เพิ่มลงตะกร้า'}
+                        </button>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                console.error('Error loading products:', err);
+            }
+        }
+
+        // เพิ่มสินค้าลงตะกร้า + เช็คสต็อก
+        function addToCart(id, name, price, maxStock) {
+            const existingItem = cart.find(item => item.id === id);
+
+            if (existingItem) {
+                if (existingItem.qty < maxStock) {
+                    existingItem.qty += 1;
+                } else {
+                    alert(`ไม่สามารถเพิ่มได้ สินค้าชิ้นนี้มีในสต็อกแค่ ${maxStock} ชิ้นครับ`);
+                    return;
+                }
+            } else {
+                cart.push({ id, name, price, qty: 1, maxStock });
+            }
+
+            updateCartUI();
+        }
+
+        // อัปเดตการแสดงผลในตะกร้า
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartTotalContainer = document.getElementById('cart-total');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = 'ยังไม่มีสินค้าในตะกร้า';
+                cartTotalContainer.innerText = '0';
+                checkoutBtn.disabled = true;
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+
+                cartItemsContainer.innerHTML += `
+                    <div style="margin-bottom: 8px;">
+                        <strong>${item.name}</strong> - ${item.price} บาท x ${item.qty} ชิ้น = <strong>${itemTotal} บาท</strong>
+                        <button onclick="changeQty(${index}, -1)">-</button>
+                        <button onclick="changeQty(${index}, 1)">+</button>
+                        <button onclick="removeItem(${index})">ลบ</button>
+                    </div>
+                `;
+            });
+
+            cartTotalContainer.innerText = total.toLocaleString();
+            checkoutBtn.disabled = false;
+        }
+
+        // เพิ่ม/ลด จำนวนสินค้าในตะกร้า
+        function changeQty(index, amount) {
+            const item = cart[index];
+            const newQty = item.qty + amount;
+
+            if (newQty > item.maxStock) {
+                alert(`สินค้าชิ้นนี้มีในสต็อกแค่ ${item.maxStock} ชิ้นครับ`);
+                return;
+            }
+
+            if (newQty <= 0) {
+                cart.splice(index, 1);
+            } else {
+                item.qty = newQty;
+            }
+            updateCartUI();
+        }
+
+        // ลบสินค้าออกจากตะกร้า
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        // ออกจากระบบ
+        function logout() {
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        }
+
+// ฟังก์ชันชำระเงิน
+        async function checkout() {
+            if (cart.length === 0) return;
+
+            if (!confirm(`ยืนยันการชำระเงินยอดรวม ${document.getElementById('cart-total').innerText} บาท ใช่หรือไม่?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cart })
+                });
+
+                const data = await response.json();
+                alert(data.message);
+
+                if (response.ok) {
+                    cart = []; // ล้างข้อมูลในตะกร้า
+                    updateCartUI(); // รีเซ็ตหน้าตะกร้า
+                    loadProducts(); // โหลดรายการสินค้าใหม่ทันที เพื่ออัปเดตจำนวนสต็อกที่ถูกตัดไป
+                }
+            } catch (err) {
+                console.error('Checkout error:', err);
+            }
+        }
+
+        // เรียกดึงข้อมูลเมื่อเปิดหน้าเว็บ
+        loadProducts();
+    </script>
+</body>
+</html>
